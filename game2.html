@@ -90,7 +90,21 @@
         const message = document.getElementById('message');
         const resetButton = document.getElementById('resetButton');
 
-        submitGuess.addEventListener('click', function() {
+        // 페이지 로딩 시 입력란에 포커스
+        window.onload = function() {
+            guessInput.focus();
+        };
+
+        submitGuess.addEventListener('click', checkGuess);
+        
+        // 엔터 키 이벤트 리스너 추가
+        guessInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkGuess();
+            }
+        });
+
+        function checkGuess() {
             const userGuess = parseInt(guessInput.value);
             guessCount++;
 
@@ -109,7 +123,7 @@
             }
 
             guessInput.value = '';
-        });
+        }
 
         function endGame() {
             submitGuess.disabled = true;
