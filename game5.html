@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숫자 슬라이딩 퍼즐</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+        }
+
+        .game-container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .puzzle-container {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+        }
+
+        .puzzle-piece {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .empty {
+            background-color: #f7f7f7;
+            cursor: default;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>숫자 슬라이딩 퍼즐</h1>
+        <p>숫자를 이동하여 순서대로 맞춰보세요!</p>
+
+        <div class="puzzle-container" id="puzzle-container">
+            <div class="puzzle-piece" data-number="1">1</div>
+            <div class="puzzle-piece" data-number="2">2</div>
+            <div class="puzzle-piece" data-number="3">3</div>
+            <div class="puzzle-piece" data-number="4">4</div>
+            <div class="puzzle-piece" data-number="5">5</div>
+            <div class="puzzle-piece" data-number="6">6</div>
+            <div class="puzzle-piece" data-number="7">7</div>
+            <div class="puzzle-piece" data-number="8">8</div>
+            <div class="puzzle-piece empty" data-number="0"></div>
+        </div>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const puzzleContainer = document.getElementById('puzzle-container');
+        let emptyPiece = document.querySelector('.empty');
+        const pieces = Array.from(document.querySelectorAll('.puzzle-piece'));
+
+        // 초기 퍼즐 셔플
+        function shufflePuzzle() {
+            for (let i = pieces.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pieces[i].innerHTML, pieces[j].innerHTML] = [pieces[j].innerHTML, pieces[i].innerHTML];
+                [pieces[i].dataset.number, pieces[j].dataset.number] = [pieces[j].dataset.number, pieces[i].dataset.number];
+            }
+        }
+
+        // 퍼즐 초기화 및 셔플
+        shufflePuzzle();
+
+        pieces.forEach(piece => {
+            piece.addEventListener('click', function () {
+                const emptyIndex = Array.from(puzzleContainer.children).indexOf(emptyPiece);
+                const clickedIndex = Array.from(puzzleContainer.children).indexOf(piece);
+
+                if (isAdjacent(clickedIndex, emptyIndex)) {
+                    swapPieces(piece, emptyPiece);
+                    checkWin();
+                }
+            });
+        });
+
+        // 인접한 퍼즐 조각인지 확인
+        function isAdjacent(index1, index2) {
+            const row1 = Math.floor(index1 / 3);
+            const col1 = index1 % 3;
+            const row2 = Math.floor(index2 / 3);
+            const col2 = index2 % 3;
+
+            return (Math.abs(row1 - row2) + Math.abs(col1 - col2) === 1);
+        }
+
+        // 퍼즐 조각 교환
+        function swapPieces(piece1, piece2) {
+            [piece1.innerHTML, piece2.innerHTML] = [piece2.innerHTML, piece1.innerHTML];
+            [piece1.dataset.number, piece2.dataset.number] = [piece2.dataset.number, piece1.dataset.number];
+
+            piece1.classList.toggle('empty');
+            piece2.classList.toggle('empty');
+            emptyPiece = piece1.classList.contains('empty') ? piece1 : piece2;
+        }
+
+        // 퍼즐 정렬 확인
+        function checkWin() {
+            const correctOrder = ['1', '2', '3', '4', '5', '6', '7', '8', '0'];
+            const currentOrder = pieces.map(piece => piece.dataset.number);
+
+            if (JSON.stringify(correctOrder) === JSON.stringify(currentOrder)) {
+                document.getElementById('message').textContent = '퍼즐을 완성했습니다!';
+            }
+        }
+    </script>
+
+</body>
+</html>

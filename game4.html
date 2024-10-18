@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>드래그 앤 드롭 게임</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+        }
+
+        .game-container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .draggable {
+            width: 100px;
+            height: 100px;
+            background-color: #007bff;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .target {
+            width: 120px;
+            height: 120px;
+            border: 2px dashed #007bff;
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>드래그 앤 드롭 게임</h1>
+        <p>파란 상자를 목표 영역에 드롭하세요!</p>
+        <div id="draggable" class="draggable" draggable="true">드래그</div>
+        <div id="target" class="target">목표</div>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const draggable = document.getElementById('draggable');
+        const target = document.getElementById('target');
+        const message = document.getElementById('message');
+
+        // 드래그가 시작될 때
+        draggable.addEventListener('dragstart', function(e) {
+            e.dataTransfer.setData('text', ''); // 데이터 전송 준비
+        });
+
+        // 드래그가 대상 위로 왔을 때
+        target.addEventListener('dragover', function(e) {
+            e.preventDefault(); // 드래그한 요소가 드롭될 수 있도록 허용
+        });
+
+        // 드래그한 요소가 드롭될 때
+        target.addEventListener('drop', function(e) {
+            e.preventDefault();
+            message.textContent = '성공적으로 목표에 드롭되었습니다!';
+            target.style.border = '2px solid green'; // 성공 시 시각적 변화
+            target.appendChild(draggable); // 드래그한 요소를 목표 영역에 추가
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가위, 바위, 보 게임</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        .game-container {
+            text-align: center;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.5rem;
+        }
+
+        .reset {
+            margin-top: 20px;
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .reset:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>가위, 바위, 보 게임</h1>
+        <p>선택하세요:</p>
+        <button id="rock">바위</button>
+        <button id="paper">보</button>
+        <button id="scissors">가위</button>
+
+        <div class="result" id="result"></div>
+        <button class="reset" id="resetButton" style="display: none;">다시 시작</button>
+    </div>
+
+    <script>
+        const choices = ['가위', '바위', '보'];
+        const resultDisplay = document.getElementById('result');
+        const resetButton = document.getElementById('resetButton');
+
+        const buttons = {
+            rock: document.getElementById('rock'),
+            paper: document.getElementById('paper'),
+            scissors: document.getElementById('scissors')
+        };
+
+        function getComputerChoice() {
+            const randomIndex = Math.floor(Math.random() * 3);
+            return choices[randomIndex];
+        }
+
+        function playGame(userChoice) {
+            const computerChoice = getComputerChoice();
+            let result = '';
+
+            if (userChoice === computerChoice) {
+                result = `무승부입니다! 컴퓨터도 ${computerChoice}를 선택했습니다.`;
+            } else if (
+                (userChoice === '바위' && computerChoice === '가위') ||
+                (userChoice === '보' && computerChoice === '바위') ||
+                (userChoice === '가위' && computerChoice === '보')
+            ) {
+                result = `이겼습니다! 컴퓨터는 ${computerChoice}를 선택했습니다.`;
+            } else {
+                result = `졌습니다! 컴퓨터는 ${computerChoice}를 선택했습니다.`;
+            }
+
+            resultDisplay.textContent = result;
+            disableButtons();
+            resetButton.style.display = 'block';
+        }
+
+        function disableButtons() {
+            buttons.rock.disabled = true;
+            buttons.paper.disabled = true;
+            buttons.scissors.disabled = true;
+        }
+
+        function enableButtons() {
+            buttons.rock.disabled = false;
+            buttons.paper.disabled = false;
+            buttons.scissors.disabled = false;
+        }
+
+        buttons.rock.addEventListener('click', function() {
+            playGame('바위');
+        });
+
+        buttons.paper.addEventListener('click', function() {
+            playGame('보');
+        });
+
+        buttons.scissors.addEventListener('click', function() {
+            playGame('가위');
+        });
+
+        resetButton.addEventListener('click', function() {
+            resultDisplay.textContent = '';
+            resetButton.style.display = 'none';
+            enableButtons();
+        });
+    </script>
+
+</body>
+</html>

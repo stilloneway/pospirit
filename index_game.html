@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under Construction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Comic Neue', cursive; /* 재미있는 폰트 */
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        h1 {
+            font-size: 3rem;
+            color: #ff6f61; /* 화사한 색상 */
+        }
+        p {
+            font-size: 1.5rem;
+            color: #4caf50; /* 또 다른 재미있는 색상 */
+        }
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 50px; /* 구슬의 점프 범위를 제한 */
+        }
+        .ball {
+            width: 15px;
+            height: 15px;
+            margin: 0 5px;
+            border-radius: 50%;
+            background-color: #3498db; /* 기본 구슬 색상 */
+            animation: jump 0.6s ease-in-out infinite;
+        }
+        .ball:nth-child(2) {
+            animation-delay: 0.2s; /* 두 번째 구슬의 점프 시간 지연 */
+        }
+        .ball:nth-child(3) {
+            animation-delay: 0.4s; /* 세 번째 구슬의 점프 시간 지연 */
+        }
+        @keyframes jump {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); } /* 점프 높이 조절 */
+        }
+        .fun-text {
+            margin-top: 20px;
+            font-size: 1.5rem; /* 크기 증가 */
+            color: #e67e22; /* 또 다른 재미있는 색상 */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* 텍스트 그림자 추가 */
+        }
+        /* 클릭 게임 스타일 */
+        .game-container {
+            text-align: center;
+            background-color: rgb(255, 230, 255);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px; /* 게임과 기존 내용 간의 간격 */
+        }
+        .click-button {
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .click-button:active {
+            background-color: #0056b3;
+        }
+        #score {
+            font-size: 2rem;
+            margin-top: 20px;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>We're Building Something Amazing!</h1> <!-- 변경된 제목 -->
+        <p>Our site is getting a makeover. Please check back soon!</p>
+        <p class="fun-text">📸 Take a selfie and make us jealous while we’re busy!</p>
+        <div class="loader">
+            <div class="ball"></div>
+            <div class="ball"></div>
+            <div class="ball"></div>
+        </div>
+        <br>
+        
+        <!-- 클릭 게임 추가 시작 -->
+        <div class="game-container">
+            <h2>Click Frenzy Game</h2>
+            <p>Smash that button like it owes you money!</p>
+            <p>Each click gets you 10 points!</p>
+            <button class="click-button" id="clickButton">Click Me!</button>
+            <div id="score">Score: 0</div>
+            <div id="message"></div>
+        </div>
+        <!-- 클릭 게임 추가 끝 -->
+    </div>
+
+    <script>
+        // 클릭 게임 로직
+        let score = 0;
+        const winScore = 100; // Winning score
+        const clickAmount = 10; // Points to increase per click
+        const clickButton = document.getElementById('clickButton');
+        const scoreDisplay = document.getElementById('score');
+        const messageDisplay = document.getElementById('message');
+
+        // Click event handler
+        clickButton.addEventListener('click', function() {
+            if (score < winScore) {
+                score += clickAmount;
+                scoreDisplay.textContent = 'Score: ' + score;
+
+                if (score >= winScore) {
+                    messageDisplay.textContent = 'Boom! You crushed it! 🎉 You win!';
+                    clickButton.disabled = true; // Disable the button
+                    clickButton.textContent = 'Game Over, Champ!';
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
