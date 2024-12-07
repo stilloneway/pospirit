@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Target Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #4CAF50;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+
+        .result {
+            font-weight: bold;
+            color: #ff5722;
+        }
+
+        .target-box {
+            margin-bottom: 20px; /* Stop 버튼 위로 이동 */
+            padding: 20px;
+            background-color: #dcdcdc;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .target-box span {
+            margin-top: 10px; /* 한 줄 띄우기 */
+        }
+
+        #targetAmount {
+            display: none; /* 처음에는 숨기기 */
+        }
+
+        .grey-text {
+            color: #dcdcdc; /* 회색 박스의 배경색과 동일한 색으로 설정 */
+        }
+
+        .black-text {
+            color: black; /* 검정색 글자 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>Number Target Challenge</h1>
+        <p>The computer will select a new target amount (£) each round. Can you stop close to it?</p>
+
+        <!-- 목표 금액을 보여줄 회색 박스 -->
+        <div class="target-box" id="targetBox">
+            <span>Target Amount:</span>
+            <span id="targetAmount" class="grey-text"></span> <!-- 목표 금액을 표시할 부분, 초기엔 회색 -->
+        </div>
+
+        <button id="startButton">Start</button>
+        <button id="stopButton" style="display: none;">Stop</button>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        let targetNumber;
+        let currentAmount = 1_000_000; // 시작 금액 (1M 파운드)
+        let interval;
+
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const message = document.getElementById('message');
+        const targetBox = document.getElementById('targetBox');
+        const targetAmountElement = document.getElementById('targetAmount');
+
+        startButton.addEventListener('click', startGame);
+        stopButton.addEventListener('click', stopGame);
+
+        function startGame() {
+            // 새 목표 금액 설정
+            targetNumber = (Math.floor(Math.random() * 10) + 1) * 1_000_000;
+            message.textContent = `Counting... Current Amount: £${formatAmount(currentAmount)}`;
+            startButton.style.display = 'none';
+            stopButton.style.display = 'inline-block';
+            targetAmountElement.style.display = 'inline'; // 목표 금액 보이기
+            targetAmountElement.textContent = `£${formatAmount(targetNumber)}`; // 목표 금액을 회색으로 표시
+
+            // 목표 금액을 회색 박스 배경색과 동일한 색으로 설정
+            targetAmountElement.classList.remove('black-text');
+            targetAmountElement.classList.add('grey-text'); // 회색으로 표시
+
+            interval = setInterval(() => {
+                currentAmount += 1_000_000; // 1M씩 증가
+                if (currentAmount > 10_000_000) {
+                    message.innerHTML = `<span class="result">💥 Whoa, you blew it! You've exceeded the budget! 💸</span>`; // 금액 초과 메시지
+                    clearInterval(interval); // 게임 종료
+                    startButton.style.display = 'inline-block';
+                    stopButton.style.display = 'none';
+                    currentAmount = 1_000_000; // 게임 초기화
+                } else {
+                    message.textContent = `Counting... Current Amount: £${formatAmount(currentAmount)}`;
+                }
+            }, 1000);
+        }
+
+        function stopGame() {
+            clearInterval(interval);
+
+            // 목표 금액을 검정색으로 표시
+            targetAmountElement.classList.remove('grey-text');
+            targetAmountElement.classList.add('black-text');
+
+            if (currentAmount === targetNumber) {
+                message.innerHTML = `<span class="result">🎉 Jackpot! The target was £${formatAmount(targetNumber)}, and you stopped at £${formatAmount(currentAmount)}!</span>`;
+            } else if (currentAmount > targetNumber) {
+                message.innerHTML = `<span class="result">💥 You got too greedy! Target: £${formatAmount(targetNumber)}, but you reached £${formatAmount(currentAmount)}.</span>`;
+            } else {
+                const difference = Math.abs(targetNumber - currentAmount);
+                let resultMessage = `<span class="result">💰 Well Done! You stopped at £${formatAmount(currentAmount)}, Target: £${formatAmount(targetNumber)}, Difference: £${formatAmount(difference)}</span>`;
+                if (difference <= 2_000_000) {
+                    resultMessage += `<br><span class="result">So close!</span>`; // So close 메시지가 이제 bold체로 표시
+                }
+                message.innerHTML = resultMessage;
+            }
+
+            startButton.style.display = 'inline-block';
+            stopButton.style.display = 'none';
+            currentAmount = 1_000_000; // 게임 초기화
+        }
+
+        function formatAmount(amount) {
+            return amount.toLocaleString(); // 금액 포맷 (천단위 콤마 추가)
+        }
+    </script>
+
+</body>
+</html>
